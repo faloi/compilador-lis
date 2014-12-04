@@ -5,9 +5,9 @@ module StateMonad (
   (>>=),
 
   evalState,
-  execState,
-  getState,
-  updState,
+--   execState,
+--   getState,
+--   updState,
   runState
 ) where
 
@@ -17,21 +17,21 @@ newtype State s a = State {runState :: s -> (a, s)}
 
 instance Monad (State s) where
    --return :: a -> State s a
-   -- COMPLETAR
+   return x = State $ \s -> (x, s)
 
    --(>>=) :: State s a -> (a -> State s b) -> State s b
-   -- COMPLETAR
+--    (>>=) (State fs) f = f.fst.fs
 
 
 evalState :: State s a -> s -> a
--- COMPLETAR
- 
-execState :: State s a -> s -> s
--- COMPLETAR
-
-getState :: State s s
--- COMPLETAR
-
-updState :: (s -> s) -> State s ()
--- COMPLETAR
-
+evalState m = fst.(runState m)
+--
+-- execState :: State s a -> s -> s
+-- -- COMPLETAR
+--
+-- getState :: State s s
+-- -- COMPLETAR
+--
+-- updState :: (s -> s) -> State s ()
+-- -- COMPLETAR
+--

@@ -1,7 +1,7 @@
 name:          compilador-lis
 version:       1.0.0
 license:       MIT
-copyright:     (c) 2013 Pat Brisbin
+copyright:     (c) 2014 Federico Aloi
 author:        Federico Aloi <federico.aloi@gmail.com>
 maintainer:    Federico Aloi <federico.aloi@gmail.com>
 build-type:    Simple
@@ -10,7 +10,7 @@ cabal-version: >= 1.8
 library
   hs-source-dirs: src
 
-  exposed-modules: StackL
+  exposed-modules: StackL, StateMonad
 
   build-depends: base == 4.*
 
