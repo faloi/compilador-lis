@@ -18,5 +18,10 @@ spec = do
     it "construida con getState, denota la mónada que retorna su estado actual" $ do
       runState getState [1] `shouldBe` ([1], [1])
 
+    it "acumula el estado tras cada bind" $ do
+      let pop = State $ \(x:xs) -> (x, xs)
+      let push x = State $ \xs -> ((), x:xs)
+      runState (do push 8; push 9; x <- pop; push x) [] `shouldBe` ((), [9, 8])
+
 main :: IO ()
 main = hspec spec

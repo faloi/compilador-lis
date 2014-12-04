@@ -20,8 +20,9 @@ instance Monad (State s) where
    return x = State $ \s -> (x, s)
 
    --(>>=) :: State s a -> (a -> State s b) -> State s b
---    (>>=) (State fs) f = f.fst.fs
-
+   (>>=) m f = State $ \s ->
+      let (a, s') = runState m s
+      in runState (f a) s'
 
 evalState :: State s a -> s -> a
 evalState m = fst.(runState m)
