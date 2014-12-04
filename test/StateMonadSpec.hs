@@ -9,8 +9,11 @@ spec = do
     it "sabe hacer return" $ do
       runState (return 8) [1] `shouldBe` (8, [1])
 
-    it "puede evaluarse, dandole un estado" $ do
+    it "al evaluarse y retorna su valor" $ do
       evalState (return 8) [1] `shouldBe` 8
+
+    it "al ejecutarse y retorna su estado" $ do
+      execState (return 8) [1] `shouldBe` [1]
 
 main :: IO ()
 main = hspec spec

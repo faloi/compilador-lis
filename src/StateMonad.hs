@@ -5,7 +5,7 @@ module StateMonad (
   (>>=),
 
   evalState,
---   execState,
+  execState,
 --   getState,
 --   updState,
   runState
@@ -25,9 +25,9 @@ instance Monad (State s) where
 
 evalState :: State s a -> s -> a
 evalState m = fst.(runState m)
---
--- execState :: State s a -> s -> s
--- -- COMPLETAR
+
+execState :: State s a -> s -> s
+execState m = snd.(runState m)
 --
 -- getState :: State s s
 -- -- COMPLETAR
