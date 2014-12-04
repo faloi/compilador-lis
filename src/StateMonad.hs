@@ -6,7 +6,7 @@ module StateMonad (
 
   evalState,
   execState,
---   getState,
+  getState,
 --   updState,
   runState
 ) where
@@ -28,9 +28,9 @@ evalState m = fst.(runState m)
 
 execState :: State s a -> s -> s
 execState m = snd.(runState m)
---
--- getState :: State s s
--- -- COMPLETAR
+
+getState :: State s s
+getState = State $ \x -> (x, x)
 --
 -- updState :: (s -> s) -> State s ()
 -- -- COMPLETAR
