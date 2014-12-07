@@ -20,6 +20,18 @@ spec = do
     it "puede compilar constantes" $ do
      NCte 26 `shouldCompileNExpTo` [Load A 26, Push A]
 
+    it "puede compilar sumas" $ do
+     Add (NCte 26) (NCte 1) `shouldCompileNExpTo` [Load A 26, Push A, Pop B, Load A 1, Push A, Pop A, ADD A B, Push A]
+
+    it "puede compilar restas" $ do
+     Sub (NCte 26) (NCte 1) `shouldCompileNExpTo` [Load A 26, Push A, Pop B, Load A 1, Push A, Pop A, SUB A B, Push A]
+
+    it "puede compilar divisiones" $ do
+     Div (NCte 26) (NCte 1) `shouldCompileNExpTo` [Load A 26, Push A, Pop B, Load A 1, Push A, Pop A, DIV A B, Push A]
+
+    it "puede compilar modulos" $ do
+     Mod (NCte 26) (NCte 1) `shouldCompileNExpTo` [Load A 26, Push A, Pop B, Load A 1, Push A, Pop A, MOD A B, Push A]
+
   describe "compileBExp" $ do
     it "puede compilar constantes" $ do
      BCte False `shouldCompileBExpTo` [Load A 0, Push A]
