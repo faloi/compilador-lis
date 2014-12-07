@@ -46,6 +46,12 @@ spec = do
     it "puede compilar un Or" $ do
      Or (BCte False) (BCte True) `shouldCompileBExpTo` [Load A 0, Push A, Pop B, Load A 1, Push A, Pop A, MUL A B, Push A, Pop A, Load B 1, ADDmod2 A B, Push A]
 
+    it "puede compilar un Equal" $ do
+     Cmp Equal (NCte 2) (NCte 3) `shouldCompileBExpTo` [Load A 2, Push A, Pop B, Load A 3, Push A, Pop A, CompEq A B, Push A]
+
+    it "puede compilar un Greater" $ do
+     Cmp Greater (NCte 2) (NCte 3) `shouldCompileBExpTo` [Load A 2, Push A, Pop B, Load A 3, Push A, Pop A, CompGt A B, Push A]
+
 main :: IO ()
 main = hspec spec
 
