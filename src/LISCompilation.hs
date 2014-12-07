@@ -45,7 +45,8 @@ compileNExp (NCte n) = doStackOp [Load A n]
 --
 compileBExp :: BExp -> State Memory [Mnemonic]
 compileBExp (BCte b) = compileNExp (NCte (delta b))
--- compileBExp (Not exp) = doStackOp $ compileBExp exp ++ [Pop A, Load 1 B, ADDmod2 A B]
+compileBExp (Not exp) = do  ops <- compileBExp exp
+                            doStackOp $ ops ++ [Pop A, Load B 1, ADDmod2 A B]
 -- compileBExp (And exp1 exp2) = compileBinExp exp1 exp2
 -- compileBExp (Or exp1 exp2) = compileBinExp exp1 exp2
 -- compileBExp (Cmp op exp1 exp2) =

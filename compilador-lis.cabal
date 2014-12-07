@@ -10,7 +10,7 @@ cabal-version: >= 1.8
 library
   hs-source-dirs: src
 
-  exposed-modules: StackL, StateMonad, AssemblyRepresentation, LISRepresentation, LISCompilation
+  exposed-modules: StackL, StateMonad, AssemblyRepresentation, LISRepresentation, LISCompilation, Pretty
 
   build-depends: base == 4.*
 

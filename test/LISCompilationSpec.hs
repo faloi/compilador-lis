@@ -25,6 +25,9 @@ spec = do
      BCte False `shouldCompileBExpTo` [Load A 0, Push A]
      BCte True `shouldCompileBExpTo` [Load A 1, Push A]
 
+    it "puede compilar un Not" $ do
+     Not (BCte False) `shouldCompileBExpTo` [Load A 0, Push A, Pop A, Load B 1, ADDmod2 A B, Push A]
+
 main :: IO ()
 main = hspec spec
 
