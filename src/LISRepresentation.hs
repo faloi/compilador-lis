@@ -137,9 +137,10 @@ ppDisy (Or e1 e2) = ppDisy e1 <+> text "||" <+> ppDisy e2
 ppDisy e = ppConj e
 
 ppConj (And e1 e2) = ppConj e1 <+> text "&&" <+> ppConj e2
-ppConj e = ppBAtom e
+ppConj e = ppNot e
 
-ppNot (Not e) = text "not" <+> ppBAtom e
+ppNot (Not e) = text "!" <+> ppBAtom e
+ppNot e = ppBAtom e
 
 ppBAtom (BCte b) = text (show b)
 ppBAtom (Cmp rop e1 e2) = ppNExp e1 <+> ppOp rop <+> ppNExp e2
@@ -155,4 +156,3 @@ ppOp LessEqual    = text "<="
 showText (Chr c) s    = c:s
 showText (Str s1) s2  = s1 ++ s2
 showText (PStr s1) s2 = s1 ++ s2
-

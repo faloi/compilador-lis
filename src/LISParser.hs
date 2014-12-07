@@ -109,7 +109,7 @@ relop  =  op ">"  Greater
       <|> op "<"  Less
       <|> op "<=" LessEqual
       <|> op "==" Equal 
-      <|> op "/=" NotEqual
+      <|> op "!=" NotEqual
           
 bConstant  =  bTrue 
           <|> bFalse
@@ -172,4 +172,3 @@ removeAllComments (c:inp)       = c : removeAllComments inp
 
 isWhitespace = (flip elem) ['\n', '\t', ' ']
 isLineBreak = (=='\n')
-
