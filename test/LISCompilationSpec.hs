@@ -22,6 +22,14 @@ spec = do
      Assign "x" (NCte 8) `shouldCompileCommTo`
       [Load A 8, Push A, Pop A, Store A "x"]
 
+    it "puede compilar un If" $ do
+     If (BCte True) [Assign "x" (NCte 8)] [Assign "x" (NCte 10)] `shouldCompileCommTo`
+      [Load A 1, Push A,
+      Pop A, JumpIfZ A "goto",
+      Load A 8, Push A, Pop A, Store A "x",
+      Mark "goto",
+      Load A 10, Push A, Pop A, Store A "x"]
+
   describe "compileNExp" $ do
     it "puede compilar variables" $ do
      Vble "x" `shouldCompileNExpTo` [Read A "x", Push A]

@@ -8,6 +8,7 @@ module LISCompilation (
 import AssemblyRepresentation
 import LISRepresentation
 import StateMonad
+import Control.Monad
 
 type Memory = [Label]
 
@@ -17,16 +18,28 @@ type Memory = [Label]
 startState :: Memory
 startState = []
 
--- compileBlock :: Block -> State Memory [Mnemonic]
--- compileBlock bl =
+(<++>) :: State Memory [Mnemonic] -> State Memory [Mnemonic] -> State Memory [Mnemonic]
+(<++>) = liftM2 (++)
+
+compileBlock :: Block -> State Memory [Mnemonic]
+compileBlock bl =
+  let (x:xs) = map compileComm bl
+  in foldl (<++>) x xs
 
 compileComm :: Command -> State Memory [Mnemonic]
+
 compileComm Skip = return [NoOp]
-compileComm (Assign var exp) =
-  do  val <- compileNExp exp
+
+compileComm (Assign var nexp) =
+  do  val <- compileNExp nexp
       return $ val ++ [Pop A, Store A var]
 
--- compileComm (If bExp trueBlock falseBlock) =
+compileComm (If bexp trueBlock falseBlock) =
+  do  trueOps <- compileBlock trueBlock
+      falseOps <- compileBlock falseBlock
+      condition <- compileBExp bexp
+      return $ condition ++ [Pop A, JumpIfZ A "goto"] ++ trueOps ++ [Mark "goto"] ++ falseOps
+
 -- compileComm (While bExp block) =
 
 doStackOp :: [Mnemonic] -> State Memory [Mnemonic]
