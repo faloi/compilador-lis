@@ -21,7 +21,7 @@ startState = []
 
 -- compileComm :: Command -> State Memory [Mnemonic]
 -- compileComm Skip = return [NoOp]
--- compileComm (Assign var nExp) = State $ \s -> (var:s, [Store A v, compileNExp nExp])
+-- compileComm (Assign var nExp) = State $ \s -> (var:s, compileNExp nExp ++ [Pop A, Store A v])
 -- compileComm (If bExp trueBlock falseBlock) =
 -- compileComm (While bExp block) =
 
@@ -31,7 +31,7 @@ doStackOp mnemonics = return (mnemonics ++ [Push A])
 compileBinExp compile exp1 exp2 assemblyOp =
   do  ops1 <- compile exp1
       ops2 <- compile exp2
-      doStackOp $ ops1 ++ [Pop B] ++ ops2 ++ [Pop A, assemblyOp A B]
+      doStackOp $ ops1 ++ ops2 ++ [Pop A, Pop B, assemblyOp A B]
 
 compileBinNExp = compileBinExp compileNExp
 
@@ -56,3 +56,5 @@ compileBExp (Or exp1 exp2) = compileBExp (Not (And exp1 exp2))
 
 compileBExp (Cmp Equal exp1 exp2) = compileBinNExp exp1 exp2 CompEq
 compileBExp (Cmp Greater exp1 exp2) = compileBinNExp exp1 exp2 CompGt
+compileBExp (Cmp NotEqual exp1 exp2) = compileBExp $ Not (Cmp Equal exp1 exp2)
+compileBExp (Cmp GreaterEqual exp1 exp2) = compileBExp $ Or (Cmp Greater exp1 exp2) (Cmp Equal exp1 exp2)
