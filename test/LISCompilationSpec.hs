@@ -40,6 +40,12 @@ spec = do
     it "puede compilar un Not" $ do
      Not (BCte False) `shouldCompileBExpTo` [Load A 0, Push A, Pop A, Load B 1, ADDmod2 A B, Push A]
 
+    it "puede compilar un And" $ do
+     And (BCte False) (BCte True) `shouldCompileBExpTo` [Load A 0, Push A, Pop B, Load A 1, Push A, Pop A, MUL A B, Push A]
+
+    it "puede compilar un Or" $ do
+     Or (BCte False) (BCte True) `shouldCompileBExpTo` [Load A 0, Push A, Pop B, Load A 1, Push A, Pop A, MUL A B, Push A, Pop A, Load B 1, ADDmod2 A B, Push A]
+
 main :: IO ()
 main = hspec spec
 

@@ -28,7 +28,6 @@ startState = []
 doStackOp :: [Mnemonic] -> State Memory [Mnemonic]
 doStackOp mnemonics = return (mnemonics ++ [Push A])
 
-compileBinExp :: (NExp -> State Memory [Mnemonic]) -> NExp -> NExp -> (Reg -> Reg -> Mnemonic) -> State Memory [Mnemonic]
 compileBinExp compile exp1 exp2 assemblyOp =
   do  ops1 <- compile exp1
       ops2 <- compile exp2
@@ -44,13 +43,15 @@ compileNExp (Sub exp1 exp2) = compileBinNExp exp1 exp2 SUB
 compileNExp (Div exp1 exp2) = compileBinNExp exp1 exp2 DIV
 compileNExp (Mod exp1 exp2) = compileBinNExp exp1 exp2 MOD
 
--- compileBinBExp = compileBinExp compileBExp
---
+compileBinBExp = compileBinExp compileBExp
+
 compileBExp :: BExp -> State Memory [Mnemonic]
 compileBExp (BCte b) = compileNExp (NCte (delta b))
 compileBExp (Not exp) =
   do  ops <- compileBExp exp
       doStackOp $ ops ++ [Pop A, Load B 1, ADDmod2 A B]
--- compileBExp (And exp1 exp2) = compileBinExp exp1 exp2
--- compileBExp (Or exp1 exp2) = compileBinExp exp1 exp2
+
+compileBExp (And exp1 exp2) = compileBinBExp exp1 exp2 MUL
+compileBExp (Or exp1 exp2) = compileBExp (Not (And exp1 exp2))
+
 -- compileBExp (Cmp op exp1 exp2) =
