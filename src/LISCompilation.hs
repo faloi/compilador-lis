@@ -1,5 +1,6 @@
 module LISCompilation (
 --     compileProgram,
+    compileComm,
     compileNExp,
     compileBExp
 ) where
@@ -19,9 +20,12 @@ startState = []
 -- compileBlock :: Block -> State Memory [Mnemonic]
 -- compileBlock bl =
 
--- compileComm :: Command -> State Memory [Mnemonic]
--- compileComm Skip = return [NoOp]
--- compileComm (Assign var nExp) = State $ \s -> (var:s, compileNExp nExp ++ [Pop A, Store A v])
+compileComm :: Command -> State Memory [Mnemonic]
+compileComm Skip = return [NoOp]
+compileComm (Assign var exp) =
+  do  val <- compileNExp exp
+      return $ val ++ [Pop A, Store A var]
+
 -- compileComm (If bExp trueBlock falseBlock) =
 -- compileComm (While bExp block) =
 

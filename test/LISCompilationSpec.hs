@@ -10,9 +10,18 @@ shouldCompileTo compiler exp expected = evalState (compiler exp) [] `shouldBe` e
 
 shouldCompileNExpTo = shouldCompileTo compileNExp
 shouldCompileBExpTo = shouldCompileTo compileBExp
+shouldCompileCommTo = shouldCompileTo compileComm
 
 spec :: Spec
 spec = do
+  describe "compileComm" $ do
+    it "puede compilar un Skip" $ do
+     Skip `shouldCompileCommTo` [NoOp]
+
+    it "puede compilar un Assign" $ do
+     Assign "x" (NCte 8) `shouldCompileCommTo`
+      [Load A 8, Push A, Pop A, Store A "x"]
+
   describe "compileNExp" $ do
     it "puede compilar variables" $ do
      Vble "x" `shouldCompileNExpTo` [Read A "x", Push A]
