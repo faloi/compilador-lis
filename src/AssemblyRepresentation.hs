@@ -47,7 +47,7 @@ data Mnemonic = NoOp
               | Mark    Label
               | Jump    Label       | JumpIfZ Reg Label
               | Push    Reg         | Pop     Reg
-   deriving Show
+   deriving (Eq, Show)
 
 type VarName  = String
 type VarIndex = Int
