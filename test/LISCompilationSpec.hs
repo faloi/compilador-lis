@@ -15,7 +15,7 @@ spec :: Spec
 spec = do
   describe "compileNExp" $ do
     it "puede compilar variables" $ do
-     Vble "x" `shouldCompileNExpTo` []
+     Vble "x" `shouldCompileNExpTo` [Read A "x", Push A]
 
     it "puede compilar constantes" $ do
      NCte 26 `shouldCompileNExpTo` [Load A 26, Push A]

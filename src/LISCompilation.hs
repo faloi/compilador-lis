@@ -36,7 +36,7 @@ compileBinExp compile exp1 exp2 assemblyOp =
 compileBinNExp = compileBinExp compileNExp
 
 compileNExp :: NExp -> State Memory [Mnemonic]
-compileNExp (Vble x) = state $ \s -> ([], x:s)
+compileNExp (Vble x) = doStackOp [Read A x]
 compileNExp (NCte n) = doStackOp [Load A n]
 compileNExp (Add exp1 exp2) = compileBinNExp exp1 exp2 ADD
 compileNExp (Sub exp1 exp2) = compileBinNExp exp1 exp2 SUB
