@@ -53,8 +53,9 @@ compileBExp (Not exp) =
 
 compileBExp (And exp1 exp2) = compileBinBExp exp1 exp2 MUL
 compileBExp (Or exp1 exp2) = compileBExp (Not (And exp1 exp2))
-
 compileBExp (Cmp Equal exp1 exp2) = compileBinNExp exp1 exp2 CompEq
 compileBExp (Cmp Greater exp1 exp2) = compileBinNExp exp1 exp2 CompGt
 compileBExp (Cmp NotEqual exp1 exp2) = compileBExp $ Not (Cmp Equal exp1 exp2)
 compileBExp (Cmp GreaterEqual exp1 exp2) = compileBExp $ Or (Cmp Greater exp1 exp2) (Cmp Equal exp1 exp2)
+compileBExp (Cmp Less exp1 exp2) = compileBExp $ Not (Cmp GreaterEqual exp1 exp2)
+compileBExp (Cmp LessEqual exp1 exp2) = compileBExp $ Or (Cmp Less exp1 exp2) (Cmp Equal exp1 exp2)

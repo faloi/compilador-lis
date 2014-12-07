@@ -97,6 +97,35 @@ spec = do
       Pop A, Pop B, MUL A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A]
 
+    it "puede compilar un Less" $ do
+     Cmp Less (NCte 2) (NCte 3) `shouldCompileBExpTo`
+      [Load A 2, Push A,
+      Load A 3, Push A,
+      Pop A, Pop B, CompGt A B, Push A,
+      Load A 2, Push A,
+      Load A 3, Push A,
+      Pop A, Pop B, CompEq A B, Push A,
+      Pop A, Pop B, MUL A B, Push A,
+      Pop A, Load B 1, ADDmod2 A B, Push A,
+      Pop A, Load B 1, ADDmod2 A B, Push A]
+
+    it "puede compilar un LessEqual" $ do
+     Cmp LessEqual (NCte 2) (NCte 3) `shouldCompileBExpTo`
+      [Load A 2, Push A,
+      Load A 3, Push A,
+      Pop A, Pop B, CompGt A B, Push A,
+      Load A 2, Push A,
+      Load A 3, Push A,
+      Pop A, Pop B, CompEq A B, Push A,
+      Pop A, Pop B, MUL A B, Push A,
+      Pop A, Load B 1, ADDmod2 A B, Push A,
+      Pop A, Load B 1, ADDmod2 A B, Push A,
+      Load A 2, Push A,
+      Load A 3, Push A,
+      Pop A, Pop B, CompEq A B, Push A,
+      Pop A, Pop B, MUL A B, Push A,
+      Pop A, Load B 1, ADDmod2 A B, Push A]
+
 main :: IO ()
 main = hspec spec
 
