@@ -37,10 +37,19 @@ spec = do
     it "puede compilar un If" $ do
      If (BCte True) [Assign "x" (NCte 8)] [Assign "x" (NCte 10)] `shouldCompileCommTo`
       [Load A 1, Push A,
-      Pop A, JumpIfZ A "goto",
+      Pop A, JumpIfZ A "false_statements",
       Load A 8, Push A, Pop A, Store A "x",
-      Mark "goto",
+      Mark "false_statements",
       Load A 10, Push A, Pop A, Store A "x"]
+
+    it "puede compilar un While" $ do
+     While (BCte True) [Assign "x" (NCte 4)] `shouldCompileCommTo`
+      [Mark "begin_while",
+        Load A 1, Push A,
+        Pop A, JumpIfZ A "end_while",
+        Load A 4, Push A, Pop A, Store A "x",
+        Jump "begin_while",
+      Mark "end_while"]
 
   describe "compileNExp" $ do
     it "puede compilar variables" $ do

@@ -39,9 +39,12 @@ compileComm (If bexp trueBlock falseBlock) =
   do  trueOps <- compileBlock trueBlock
       falseOps <- compileBlock falseBlock
       condition <- compileBExp bexp
-      return $ condition ++ [Pop A, JumpIfZ A "goto"] ++ trueOps ++ [Mark "goto"] ++ falseOps
+      return $ condition ++ [Pop A, JumpIfZ A "false_statements"] ++ trueOps ++ [Mark "false_statements"] ++ falseOps
 
--- compileComm (While bExp block) =
+compileComm (While bexp block) =
+  do  condition <- compileBExp bexp
+      body <- compileBlock block
+      return $ [Mark "begin_while"] ++ condition ++ [Pop A, JumpIfZ A "end_while"] ++ body ++ [Jump "begin_while", Mark "end_while"]
 
 doStackOp :: [Mnemonic] -> State Memory [Mnemonic]
 doStackOp mnemonics = return (mnemonics ++ [Push A])
