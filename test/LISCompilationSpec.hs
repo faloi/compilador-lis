@@ -11,9 +11,21 @@ shouldCompileTo compiler exp expected = evalState (compiler exp) [] `shouldBe` e
 shouldCompileNExpTo = shouldCompileTo compileNExp
 shouldCompileBExpTo = shouldCompileTo compileBExp
 shouldCompileCommTo = shouldCompileTo compileComm
+shouldCompileBlockTo = shouldCompileTo compileBlock
 
 spec :: Spec
 spec = do
+  describe "compileBlock" $ do
+    it "puede compilar bloques" $ do
+     [Assign "x" (NCte 10),
+      Assign "y" (Add (NCte 1) (Vble "x"))] `shouldCompileBlockTo`
+      [Load A 10, Push A,
+      Pop A, Store A "x",
+      Load A 1, Push A,
+      Read A "x", Push A,
+      Pop A, Pop B, ADD A B, Push A,
+      Pop A, Store A "y"]
+
   describe "compileComm" $ do
     it "puede compilar un Skip" $ do
      Skip `shouldCompileCommTo` [NoOp]

@@ -1,5 +1,6 @@
 module LISCompilation (
---     compileProgram,
+    compileProgram,
+    compileBlock,
     compileComm,
     compileNExp,
     compileBExp
@@ -12,8 +13,8 @@ import Control.Monad
 
 type Memory = [Label]
 
--- compileProgram :: Program -> AssemblyProgram
--- compileProgram (Program bl) = AssemblyProgram (evalState (compileBlock bl) startState)
+compileProgram :: Program -> AssemblyProgram
+compileProgram (Program bl) = AssemblyProgram (evalState (compileBlock bl) startState)
 
 startState :: Memory
 startState = []
