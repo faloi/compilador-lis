@@ -23,9 +23,7 @@ startState = []
 (<++>) = liftM2 (++)
 
 compileBlock :: Block -> State Memory [Mnemonic]
-compileBlock bl =
-  let (x:xs) = map compileComm bl
-  in foldl (<++>) x xs
+compileBlock = foldl (<++>) (return []).map compileComm
 
 compileComm :: Command -> State Memory [Mnemonic]
 
