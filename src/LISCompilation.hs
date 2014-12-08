@@ -50,7 +50,7 @@ doStackOp mnemonics = return (mnemonics ++ [Push A])
 compileBinExp compile exp1 exp2 assemblyOp =
   do  ops1 <- compile exp1
       ops2 <- compile exp2
-      doStackOp $ ops1 ++ ops2 ++ [Pop A, Pop B, assemblyOp A B]
+      doStackOp $ ops1 ++ ops2 ++ [Pop B, Pop A, assemblyOp A B]
 
 compileBinNExp = compileBinExp compileNExp
 
@@ -60,6 +60,7 @@ compileNExp (NCte n) = doStackOp [Load A n]
 compileNExp (Add exp1 exp2) = compileBinNExp exp1 exp2 ADD
 compileNExp (Sub exp1 exp2) = compileBinNExp exp1 exp2 SUB
 compileNExp (Div exp1 exp2) = compileBinNExp exp1 exp2 DIV
+compileNExp (Mul exp1 exp2) = compileBinNExp exp1 exp2 MUL
 compileNExp (Mod exp1 exp2) = compileBinNExp exp1 exp2 MOD
 
 compileBinBExp = compileBinExp compileBExp

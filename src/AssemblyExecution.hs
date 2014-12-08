@@ -1,5 +1,8 @@
 module AssemblyExecution (
-    execProgram
+    execProgram,
+    MVS,
+    stack,
+    datamem
 ) where
 
 import AssemblyRepresentation
@@ -72,42 +75,42 @@ execMnemonics NoOp            mvs                         = mvs
 execMnemonics (Mark _)        mvs                         = mvs
 execMnemonics (Load     r  n) (MVS ip regs stk imem dmem) =
    MVS ip (loadReg r n regs) stk imem dmem
-execMnemonics (Read     r  x) (MVS ip regs stk imem dmem) = 
+execMnemonics (Read     r  x) (MVS ip regs stk imem dmem) =
    case (Map.lookup x dmem) of
      Nothing -> error "Variable not found!"
      Just v  -> MVS ip (loadReg r v regs) stk imem dmem
-execMnemonics (Store    r  x) (MVS ip regs stk imem dmem) = 
+execMnemonics (Store    r  x) (MVS ip regs stk imem dmem) =
    let v = readReg r regs
     in MVS ip regs stk imem (Map.insert x v dmem)
-execMnemonics (ADD     r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (ADD     r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 (v1+v2) regs) stk imem dmem
-execMnemonics (ADDmod2 r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (ADDmod2 r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 ((v1+v2) `mod` 2) regs) stk imem dmem
-execMnemonics (MUL     r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (MUL     r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 (v1*v2) regs) stk imem dmem
-execMnemonics (SUB     r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (SUB     r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 (v1-v2) regs) stk imem dmem
-execMnemonics (DIV     r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (DIV     r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 (v1 `div` v2) regs) stk imem dmem
-execMnemonics (MOD     r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (MOD     r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 (v1 `mod` v2) regs) stk imem dmem
-execMnemonics (CompEq  r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (CompEq  r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 (delta (v1==v2)) regs) stk imem dmem
-execMnemonics (CompGt  r1 r2) (MVS ip regs stk imem dmem) = 
+execMnemonics (CompGt  r1 r2) (MVS ip regs stk imem dmem) =
    let v1 = readReg r1 regs
        v2 = readReg r2 regs
     in MVS ip (loadReg r1 (delta (v1>v2)) regs) stk imem dmem
@@ -119,10 +122,10 @@ execMnemonics (Pop      r)    (MVS ip regs stk imem dmem) =
     then error "Pop in empty stack!"
     else let v = Stack.top stk
           in MVS ip (loadReg r v regs) (Stack.pop stk) imem dmem
-execMnemonics (Jump     l)    (MVS ip regs stk imem dmem) = 
+execMnemonics (Jump     l)    (MVS ip regs stk imem dmem) =
    let lip = findLabel l (Map.assocs imem)
     in MVS lip regs stk imem dmem
-execMnemonics (JumpIfZ  r  l) (MVS ip regs stk imem dmem) = 
+execMnemonics (JumpIfZ  r  l) (MVS ip regs stk imem dmem) =
    let lip = findLabel l (Map.assocs imem)
        v = readReg r regs
     in if (v == 0) then (MVS lip regs stk imem dmem)

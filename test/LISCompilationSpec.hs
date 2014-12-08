@@ -23,7 +23,7 @@ spec = do
       Pop A, Store A "x",
       Load A 1, Push A,
       Read A "x", Push A,
-      Pop A, Pop B, ADD A B, Push A,
+      Pop B, Pop A, ADD A B, Push A,
       Pop A, Store A "y"]
 
   describe "compileComm" $ do
@@ -62,25 +62,25 @@ spec = do
      Add (NCte 26) (NCte 1) `shouldCompileNExpTo`
       [Load A 26, Push A,
       Load A 1, Push A,
-      Pop A, Pop B, ADD A B, Push A]
+      Pop B, Pop A, ADD A B, Push A]
 
     it "puede compilar restas" $ do
      Sub (NCte 26) (NCte 1) `shouldCompileNExpTo`
       [Load A 26, Push A,
       Load A 1, Push A,
-      Pop A, Pop B, SUB A B, Push A]
+      Pop B, Pop A, SUB A B, Push A]
 
     it "puede compilar divisiones" $ do
      Div (NCte 26) (NCte 1) `shouldCompileNExpTo`
       [Load A 26, Push A,
       Load A 1, Push A,
-      Pop A, Pop B, DIV A B, Push A]
+      Pop B, Pop A, DIV A B, Push A]
 
     it "puede compilar modulos" $ do
      Mod (NCte 26) (NCte 1) `shouldCompileNExpTo`
       [Load A 26, Push A,
       Load A 1, Push A,
-      Pop A, Pop B, MOD A B, Push A]
+      Pop B, Pop A, MOD A B, Push A]
 
   describe "compileBExp" $ do
     it "puede compilar constantes" $ do
@@ -96,54 +96,54 @@ spec = do
      And (BCte False) (BCte True) `shouldCompileBExpTo`
       [Load A 0, Push A,
       Load A 1, Push A,
-      Pop A, Pop B, MUL A B, Push A]
+      Pop B, Pop A, MUL A B, Push A]
 
     it "puede compilar un Or" $ do
      Or (BCte False) (BCte True) `shouldCompileBExpTo`
       [Load A 0, Push A,
       Load A 1, Push A,
-      Pop A, Pop B, MUL A B, Push A,
+      Pop B, Pop A, MUL A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A]
 
     it "puede compilar un Equal" $ do
      Cmp Equal (NCte 2) (NCte 3) `shouldCompileBExpTo`
       [Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompEq A B, Push A]
+      Pop B, Pop A, CompEq A B, Push A]
 
     it "puede compilar un Greater" $ do
      Cmp Greater (NCte 2) (NCte 3) `shouldCompileBExpTo`
       [Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompGt A B, Push A]
+      Pop B, Pop A, CompGt A B, Push A]
 
     it "puede compilar un NotEqual" $ do
      Cmp NotEqual (NCte 2) (NCte 3) `shouldCompileBExpTo`
       [Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompEq A B, Push A,
+      Pop B, Pop A, CompEq A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A]
 
     it "puede compilar un GreaterEqual" $ do
      Cmp GreaterEqual (NCte 2) (NCte 3) `shouldCompileBExpTo`
       [Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompGt A B, Push A,
+      Pop B, Pop A, CompGt A B, Push A,
       Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompEq A B, Push A,
-      Pop A, Pop B, MUL A B, Push A,
+      Pop B, Pop A, CompEq A B, Push A,
+      Pop B, Pop A, MUL A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A]
 
     it "puede compilar un Less" $ do
      Cmp Less (NCte 2) (NCte 3) `shouldCompileBExpTo`
       [Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompGt A B, Push A,
+      Pop B, Pop A, CompGt A B, Push A,
       Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompEq A B, Push A,
-      Pop A, Pop B, MUL A B, Push A,
+      Pop B, Pop A, CompEq A B, Push A,
+      Pop B, Pop A, MUL A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A]
 
@@ -151,17 +151,17 @@ spec = do
      Cmp LessEqual (NCte 2) (NCte 3) `shouldCompileBExpTo`
       [Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompGt A B, Push A,
+      Pop B, Pop A, CompGt A B, Push A,
       Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompEq A B, Push A,
-      Pop A, Pop B, MUL A B, Push A,
+      Pop B, Pop A, CompEq A B, Push A,
+      Pop B, Pop A, MUL A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A,
       Load A 2, Push A,
       Load A 3, Push A,
-      Pop A, Pop B, CompEq A B, Push A,
-      Pop A, Pop B, MUL A B, Push A,
+      Pop B, Pop A, CompEq A B, Push A,
+      Pop B, Pop A, MUL A B, Push A,
       Pop A, Load B 1, ADDmod2 A B, Push A]
 
 main :: IO ()
