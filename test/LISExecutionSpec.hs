@@ -65,6 +65,50 @@ spec = do
         it "True True" $ do
           Or (BCte True) (BCte True) `shouldEqualBool` True
 
+      describe "un Equal" $ do
+        it "cuando es verdadero" $ do
+          Cmp Equal (NCte 3) (NCte 3) `shouldEqualBool` True
+        it "cuando es falso" $ do
+          Cmp Equal (NCte 3) (NCte 2) `shouldEqualBool` False
+
+      describe "un NotEqual" $ do
+        it "cuando es verdadero" $ do
+          Cmp NotEqual (NCte 3) (NCte 3) `shouldEqualBool` False
+        it "cuando es falso" $ do
+          Cmp NotEqual (NCte 3) (NCte 2) `shouldEqualBool` True
+
+      describe "un Greater" $ do
+        it "cuando es mayor" $ do
+          Cmp Greater (NCte 3) (NCte 2) `shouldEqualBool` True
+        it "cuando es igual" $ do
+          Cmp Greater (NCte 2) (NCte 2) `shouldEqualBool` False
+        it "cuando es menor" $ do
+          Cmp Greater (NCte 1) (NCte 2) `shouldEqualBool` False
+
+      describe "un GreaterEqual" $ do
+        it "cuando es mayor" $ do
+          Cmp GreaterEqual (NCte 3) (NCte 2) `shouldEqualBool` True
+        it "cuando es igual" $ do
+          Cmp GreaterEqual (NCte 2) (NCte 2) `shouldEqualBool` True
+        it "cuando es menor" $ do
+          Cmp GreaterEqual (NCte 1) (NCte 2) `shouldEqualBool` False
+
+      describe "un Less" $ do
+        it "cuando es mayor" $ do
+          Cmp Less (NCte 3) (NCte 2) `shouldEqualBool` False
+        it "cuando es igual" $ do
+          Cmp Less (NCte 2) (NCte 2) `shouldEqualBool` False
+        it "cuando es menor" $ do
+          Cmp Less (NCte 1) (NCte 2) `shouldEqualBool` True
+
+      describe "un LessEqual" $ do
+        it "cuando es mayor" $ do
+          Cmp LessEqual (NCte 3) (NCte 2) `shouldEqualBool` False
+        it "cuando es igual" $ do
+          Cmp LessEqual (NCte 2) (NCte 2) `shouldEqualBool` True
+        it "cuando es menor" $ do
+          Cmp LessEqual (NCte 1) (NCte 2) `shouldEqualBool` True
+
 main :: IO ()
 main = hspec spec
 
