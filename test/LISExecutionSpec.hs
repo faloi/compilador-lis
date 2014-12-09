@@ -29,6 +29,16 @@ spec = do
             [Assign "x" (NCte 28)]
             [Assign "x" (NCte 12)]] `memoryShouldBe` [("x", 12)]
 
+      it "cuando hay mas de uno" $ do
+        afterRunning [
+          If (BCte False)
+            [Assign "x" (NCte 28)]
+            [Assign "x" (NCte 12)],
+
+          If (BCte False)
+            [Assign "y" (NCte 28)]
+            [Assign "y" (NCte 12)]] `memoryShouldBe` [("x", 12), ("y", 12)]
+
     describe "expresiones numericas:" $ do
       it "una variable" $ do
         afterRunning [

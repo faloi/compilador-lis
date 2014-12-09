@@ -11,13 +11,14 @@ import LISRepresentation
 import StateMonad
 import Control.Monad
 
-type Memory = [Label]
+-- La memoria es una tupla que guarda la cantidad de ifs y de whiles que hay en el codigo
+type Memory = (Int, Int)
 
 compileProgram :: Program -> AssemblyProgram
 compileProgram (Program bl) = AssemblyProgram (evalState (compileBlock bl) startState)
 
 startState :: Memory
-startState = []
+startState = (0, 0)
 
 (<++>) :: State Memory [Mnemonic] -> State Memory [Mnemonic] -> State Memory [Mnemonic]
 (<++>) = liftM2 (++)
@@ -37,7 +38,11 @@ compileComm (If bexp trueBlock falseBlock) =
   do  trueOps <- compileBlock trueBlock
       falseOps <- compileBlock falseBlock
       condition <- compileBExp bexp
-      return $ condition ++ [Pop A, JumpIfZ A "false_statements"] ++ trueOps ++ [Jump "end_if", Mark "false_statements"] ++ falseOps ++ [Mark "end_if"]
+      (cantidadIfs, _) <- getState
+      let end_if = "end_if #" ++ show cantidadIfs
+      let false_branch = "false_branch #" ++ show cantidadIfs
+      updState $ \(ifs, whiles) -> (ifs + 1, whiles)
+      return $ condition ++ [Pop A, JumpIfZ A false_branch] ++ trueOps ++ [Jump end_if, Mark false_branch] ++ falseOps ++ [Mark end_if]
 
 compileComm (While bexp block) =
   do  condition <- compileBExp bexp
