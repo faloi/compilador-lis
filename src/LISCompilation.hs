@@ -72,7 +72,7 @@ compileBExp (Not exp) =
       doStackOp $ ops ++ [Pop A, Load B 1, ADDmod2 A B]
 
 compileBExp (And exp1 exp2) = compileBinBExp exp1 exp2 MUL
-compileBExp (Or exp1 exp2) = compileBExp (Not (And exp1 exp2))
+compileBExp (Or exp1 exp2) = compileBExp $ Not (And (Not (And exp1 exp1)) (Not (And exp2 exp2)))
 compileBExp (Cmp Equal exp1 exp2) = compileBinNExp exp1 exp2 CompEq
 compileBExp (Cmp Greater exp1 exp2) = compileBinNExp exp1 exp2 CompGt
 compileBExp (Cmp NotEqual exp1 exp2) = compileBExp $ Not (Cmp Equal exp1 exp2)

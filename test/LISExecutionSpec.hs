@@ -39,6 +39,12 @@ spec = do
         it "un False" $ do
           BCte False `shouldEqualBool` False
 
+      describe "un Not" $ do
+        it "True" $ do
+          Not (BCte True) `shouldEqualBool` False
+        it "False" $ do
+          Not (BCte False) `shouldEqualBool` True
+
       describe "un And" $ do
         it "True False" $ do
           And (BCte True) (BCte False) `shouldEqualBool` False
@@ -49,11 +55,15 @@ spec = do
         it "True True" $ do
           And (BCte True) (BCte True) `shouldEqualBool` True
 
-      describe "un Not" $ do
-        it "True" $ do
-          Not (BCte True) `shouldEqualBool` False
-        it "False" $ do
-          Not (BCte False) `shouldEqualBool` True
+      describe "un Or" $ do
+        it "True False" $ do
+          Or (BCte True) (BCte False) `shouldEqualBool` True
+        it "False True" $ do
+          Or (BCte False) (BCte True) `shouldEqualBool` True
+        it "False False" $ do
+          Or (BCte False) (BCte False) `shouldEqualBool` False
+        it "True True" $ do
+          Or (BCte True) (BCte True) `shouldEqualBool` True
 
 main :: IO ()
 main = hspec spec
