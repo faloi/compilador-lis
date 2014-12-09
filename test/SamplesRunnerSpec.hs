@@ -24,7 +24,7 @@ shouldHaveResult mvs expectedResult = do result <- mvs; (fromJust.(Map.lookup "r
 
 spec :: Spec
 spec = do
-  describe "Samples" $ do
+  describe "Running sample" $ do
     it "factorial" $ do
       running "factorial" `shouldHaveResult` 720
 
@@ -36,6 +36,9 @@ spec = do
 
     it "summatory" $ do
       running "summatory" `shouldHaveResult` 55
+
+    it "fibonacci" $ do
+      running "fibonacci" `shouldHaveResult` 6765
 
 main :: IO ()
 main = hspec spec
