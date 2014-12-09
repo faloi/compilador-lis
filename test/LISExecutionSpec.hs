@@ -39,6 +39,19 @@ spec = do
             [Assign "y" (NCte 28)]
             [Assign "y" (NCte 12)]] `memoryShouldBe` [("x", 12), ("y", 12)]
 
+    describe "un while" $ do
+      it "cuando la condicion es falsa desde el principio" $ do
+        afterRunning [
+          Assign "x" (NCte 8),
+          While (BCte False) [
+            Assign "x" (NCte 25)]] `memoryShouldBe` [("x", 8)]
+
+      it "mientras la condicion es verdadera" $ do
+        afterRunning [
+          Assign "x" (NCte 0),
+          While (Cmp Less (Vble "x") (NCte 10)) [
+            Assign "x" (Add (Vble "x") (NCte 1))]] `memoryShouldBe` [("x", 10)]
+
     describe "expresiones numericas:" $ do
       it "una variable" $ do
         afterRunning [
