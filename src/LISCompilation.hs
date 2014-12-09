@@ -37,7 +37,7 @@ compileComm (If bexp trueBlock falseBlock) =
   do  trueOps <- compileBlock trueBlock
       falseOps <- compileBlock falseBlock
       condition <- compileBExp bexp
-      return $ condition ++ [Pop A, JumpIfZ A "false_statements"] ++ trueOps ++ [Mark "false_statements"] ++ falseOps
+      return $ condition ++ [Pop A, JumpIfZ A "false_statements"] ++ trueOps ++ [Jump "end_if", Mark "false_statements"] ++ falseOps ++ [Mark "end_if"]
 
 compileComm (While bexp block) =
   do  condition <- compileBExp bexp

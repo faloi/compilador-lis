@@ -39,8 +39,10 @@ spec = do
       [Load A 1, Push A,
       Pop A, JumpIfZ A "false_statements",
       Load A 8, Push A, Pop A, Store A "x",
+      Jump "end_if",
       Mark "false_statements",
-      Load A 10, Push A, Pop A, Store A "x"]
+      Load A 10, Push A, Pop A, Store A "x",
+      Mark "end_if"]
 
     it "puede compilar un While" $ do
      While (BCte True) [Assign "x" (NCte 4)] `shouldCompileCommTo`
