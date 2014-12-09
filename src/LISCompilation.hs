@@ -26,21 +26,18 @@ startState = (0, 0)
 compileBlock :: Block -> State Memory [Mnemonic]
 compileBlock = foldl (<++>) (return []).map compileComm
 
-generateIfLabels :: State Memory (String, String)
-generateIfLabels =
-  do  (cantidadIfs, _) <- getState
-      let end_if = "end_if #" ++ show cantidadIfs
-      let false_branch = "false_branch #" ++ show cantidadIfs
-      updState $ \(ifs, whiles) -> (ifs + 1, whiles)
-      return (end_if, false_branch)
+mapTuple :: (a -> a) -> (b -> b) -> (a, b) -> (a, b)
+mapTuple f g (x, y) = (f x, g y)
 
-generateWhileLabels :: State Memory (String, String)
-generateWhileLabels =
-  do  (_, cantidadWhiles) <- getState
-      let begin_while = "begin_while #" ++ show cantidadWhiles
-      let end_while = "end_while #" ++ show cantidadWhiles
-      updState $ \(ifs, whiles) -> (ifs, whiles + 1)
-      return (begin_while, end_while)
+generateLabels :: ((Int, Int) -> Int) -> [Label] -> (Int -> Int) -> (Int -> Int) -> State Memory [Label]
+generateLabels getCantidad etiquetas f1 f2 =
+  do  memoria <- getState
+      let cantidad = getCantidad memoria
+      updState (mapTuple f1 f2)
+      return $ map (\x -> x ++ " #" ++ show cantidad) etiquetas
+
+generateIfLabels = generateLabels fst ["end_if", "false_branch"] (+1) id
+generateWhileLabels = generateLabels snd ["begin_while", "end_while"] id (+1)
 
 compileComm :: Command -> State Memory [Mnemonic]
 
@@ -54,13 +51,13 @@ compileComm (If bexp trueBlock falseBlock) =
   do  trueOps <- compileBlock trueBlock
       falseOps <- compileBlock falseBlock
       condition <- compileBExp bexp
-      (end_if, false_branch) <- generateIfLabels
+      (end_if : false_branch : []) <- generateIfLabels
       return $ condition ++ [Pop A, JumpIfZ A false_branch] ++ trueOps ++ [Jump end_if, Mark false_branch] ++ falseOps ++ [Mark end_if]
 
 compileComm (While bexp block) =
   do  condition <- compileBExp bexp
       body <- compileBlock block
-      (begin_while, end_while) <- generateWhileLabels
+      (begin_while : end_while : []) <- generateWhileLabels
       return $ [Mark begin_while] ++ condition ++ [Pop A, JumpIfZ A end_while] ++ body ++ [Jump begin_while, Mark end_while]
 
 doStackOp :: [Mnemonic] -> State Memory [Mnemonic]
