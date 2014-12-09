@@ -52,6 +52,16 @@ spec = do
           While (Cmp Less (Vble "x") (NCte 10)) [
             Assign "x" (Add (Vble "x") (NCte 1))]] `memoryShouldBe` [("x", 10)]
 
+      it "cuando hay mas de uno" $ do
+        afterRunning [
+          Assign "x" (NCte 0),
+          While (Cmp Less (Vble "x") (NCte 10)) [
+            Assign "x" (Add (Vble "x") (NCte 1))],
+
+          Assign "y" (NCte 0),
+          While (Cmp Less (Vble "y") (NCte 10)) [
+            Assign "y" (Add (Vble "y") (NCte 1))]] `memoryShouldBe` [("x", 10), ("y", 10)]
+
     describe "expresiones numericas:" $ do
       it "una variable" $ do
         afterRunning [
