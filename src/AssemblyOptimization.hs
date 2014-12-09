@@ -16,5 +16,8 @@ optimizeProgram (AssemblyProgram mns) = AssemblyProgram (optimizeMnemonics mns)
 -- optimizeMnemonics
 
 optimizeMnemonics :: [Mnemonic] -> [Mnemonic]
-optimizeMnemonics = id -- REEMPLAZAR
+optimizeMnemonics (Push x : Pop y : ms)
+  | x == y = optimizeMnemonics ms
 
+optimizeMnemonics (m:ms) = m : optimizeMnemonics ms
+optimizeMnemonics [] = []

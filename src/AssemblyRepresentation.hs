@@ -35,7 +35,7 @@ module AssemblyRepresentation (
 
 -- Assembly Representation
 
-data AssemblyProgram = AssemblyProgram [Mnemonic]
+data AssemblyProgram = AssemblyProgram [Mnemonic] deriving (Eq, Show)
 
 data Mnemonic = NoOp
               | Load    Reg Int
