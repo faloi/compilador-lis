@@ -16,7 +16,15 @@ shouldEqualBool bexp expected = afterRunning [If bexp [Assign "x" (NCte 1)] [Ass
 spec :: Spec
 spec = do
   describe "LIS puede ejecutar correctamente" $ do
-    describe "operaciones numericas:" $ do
+    describe "expresiones numericas:" $ do
+      it "una variable" $ do
+        afterRunning [
+          Assign "x" (NCte 8),
+          Assign "y" (Vble "x")] `memoryShouldBe` [("x", 8), ("y", 8)]
+
+      it "una constante" $ do
+        NCte 8 `shouldEqual` 8
+
       it "una suma" $ do
         Add (NCte 8) (NCte 7) `shouldEqual` 15
 
@@ -32,7 +40,7 @@ spec = do
       it "un modulo" $ do
         Mod (NCte 8) (NCte 2) `shouldEqual` 0
 
-    describe "operaciones booleanas:" $ do
+    describe "expresiones booleanas:" $ do
       describe "constantes" $ do
         it "un True" $ do
           BCte True `shouldEqualBool` True
