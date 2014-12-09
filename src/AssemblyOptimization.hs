@@ -19,5 +19,8 @@ optimizeMnemonics :: [Mnemonic] -> [Mnemonic]
 optimizeMnemonics (Push x : Pop y : ms)
   | x == y = optimizeMnemonics ms
 
+optimizeMnemonics (Store r1 v1 : Read r2 v2 : ms)
+  | r1 == r2 && v1 == v2 = optimizeMnemonics $ (Store r1 v1):ms
+
 optimizeMnemonics (m:ms) = m : optimizeMnemonics ms
 optimizeMnemonics [] = []
