@@ -9,7 +9,8 @@ module StateMonad (
   execState,
   getState,
   updState,
-  runState
+  runState,
+  errState
 ) where
 
 import MayFail
@@ -39,4 +40,5 @@ getState = State $ \x -> (x, x)
 updState :: (s -> s) -> State s ()
 updState f = State $ \s -> ((), f s)
 
--- errState :: Exception -> State s a
+errState :: Exception -> State s a
+errState ex = error "Not yet implemented"

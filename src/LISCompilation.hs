@@ -67,8 +67,13 @@ compileComm (While bexp block) =
       return $ [Mark begin_while] ++ condition ++ [Pop A, JumpIfZ A end_while] ++ body ++ [Jump begin_while, Mark end_while]
 
 compileComm (Switch _ [] defaultBlock) = compileComm (If (BCte True) defaultBlock [])
-compileComm (Switch expression ((Case num caseBlock):cs) defaultBlock) =
-  compileComm (If (Cmp Equal expression (NCte num)) caseBlock [(Switch expression cs defaultBlock)])
+compileComm (Switch expression cases@((Case num caseBlock):cs) defaultBlock) =
+  if validateCases cases
+  then compileComm (If (Cmp Equal expression (NCte num)) caseBlock [(Switch expression cs defaultBlock)])
+  else errState InvalidCase
+
+validateCases [] = True
+validateCases ((Case num1 _):cs) = all (\(Case num2 _) -> num1 /= num2) cs && validateCases cs
 
 doStackOp :: [Mnemonic] -> State Memory [Mnemonic]
 doStackOp mnemonics = return (mnemonics ++ [Push A])
