@@ -2,6 +2,7 @@ module StateMonadSpec where
 
 import Test.Hspec
 import StateMonad
+import MayFail
 
 spec :: Spec
 spec = do
@@ -10,10 +11,10 @@ spec = do
       runState (return 8) [1] `shouldBe` (8, [1])
 
     it "al evaluarse y retorna su valor" $ do
-      evalState (return 8) [1] `shouldBe` 8
+      evalState (return 8) [1] `shouldBe` MayFail.Ok 8
 
     it "al ejecutarse y retorna su estado" $ do
-      execState (return 8) [1] `shouldBe` [1]
+      execState (return 8) [1] `shouldBe` MayFail.Ok [1]
 
     it "construida con getState, denota la mónada que retorna su estado actual" $ do
       runState getState [1] `shouldBe` ([1], [1])

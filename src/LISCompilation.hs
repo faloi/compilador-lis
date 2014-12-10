@@ -10,13 +10,19 @@ import AssemblyRepresentation
 import LISRepresentation
 import StateMonad
 import Control.Monad
+import MayFail
+import Data.Maybe
 
 -- La memoria es una tupla que guarda la cantidad de ifs y de whiles que hay en el codigo
 type Memory = (Int, Int)
 
 compileProgram :: Program -> AssemblyProgram
-compileProgram (Program bl) = AssemblyProgram (evalState (compileBlock bl) startState)
-
+compileProgram (Program bl) = tryCatch (evalState (compileBlock bl) startState)
+                                (\mns -> AssemblyProgram mns)
+                                (\ex  -> case ex of
+                                          InvalidCase -> error "Duplicated case in switch"
+                                          Other msg   -> error msg
+                                          otherwise   -> error "Unexpected error")
 startState :: Memory
 startState = (0, 0)
 

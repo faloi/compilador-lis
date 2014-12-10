@@ -12,6 +12,8 @@ module StateMonad (
   runState
 ) where
 
+import MayFail
+
 newtype State s a = State {runState :: s -> (a, s)}
 
 instance Monad (State s) where
@@ -25,14 +27,16 @@ instance Monad (State s) where
 state :: (s -> (a, s)) -> State s a
 state = State
 
-evalState :: State s a -> s -> a
-evalState m = fst.(runState m)
+evalState :: State s a -> s -> MayFail a
+evalState m = (MayFail.Ok).fst.(runState m)
 
-execState :: State s a -> s -> s
-execState m = snd.(runState m)
+execState :: State s a -> s -> MayFail s
+execState m = (MayFail.Ok).snd.(runState m)
 
 getState :: State s s
 getState = State $ \x -> (x, x)
 
 updState :: (s -> s) -> State s ()
 updState f = State $ \s -> ((), f s)
+
+-- errState :: Exception -> State s a
