@@ -16,6 +16,11 @@ shouldEqualBool bexp expected = afterRunning [If bexp [Assign "x" (NCte 1)] [Ass
 spec :: Spec
 spec = do
   describe "LIS puede ejecutar correctamente" $ do
+    describe "un switch" $ do
+      it "sin branches" $ do
+        afterRunning [
+          Switch (NCte 3) [] [Assign "x" (NCte 3)]] `memoryShouldBe` [("x", 3)]
+
     describe "un if" $ do
       it "cuando la condicion es verdadera" $ do
         afterRunning [
