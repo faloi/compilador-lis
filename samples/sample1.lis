@@ -1,0 +1,10 @@
+program {
+  n := 120;
+
+  switch (n % 2)
+    case 0  { res := 1 }
+    default { res := 0 }
+
+  return := res
+}
+

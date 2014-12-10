@@ -1,0 +1,14 @@
+program {
+  n := 123;
+
+  switch (n % 2)
+    case 0 { 
+      switch (n % 4)
+        case 0  { res := 1 }
+        default { res := 0 }
+    }
+    default { res := 0 }
+
+  return := res;
+}
+

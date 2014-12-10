@@ -1,0 +1,14 @@
+program {
+  n := 3;
+
+  switch (n)
+    case 1  { res := 1 }
+    case 2  { res := 2 }
+    case 3  { res := 3 }
+    case 4  { res := 4 }
+    case 5  { res := 5 }
+    default { res := -1 }
+
+  return := res
+}
+
