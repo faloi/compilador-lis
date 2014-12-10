@@ -21,6 +21,34 @@ spec = do
         afterRunning [
           Switch (NCte 3) [] [Assign "x" (NCte 3)]] `memoryShouldBe` [("x", 3)]
 
+      it "con 1 branch, cuando matchea" $ do
+        afterRunning [
+          Switch (NCte 3)
+            [Case 3 [Assign "x" (NCte 3)]]
+            [Assign "x" (NCte 4)]] `memoryShouldBe` [("x", 3)]
+
+      it "con 1 branch, cuando no matchea" $ do
+        afterRunning [
+          Switch (NCte 3)
+            [Case 2 [Assign "x" (NCte 2)]]
+            [Assign "x" (NCte 4)]] `memoryShouldBe` [("x", 4)]
+
+      it "con n branches, cuando alguna matchea" $ do
+        afterRunning [
+          Switch (NCte 8)
+            [Case 2 [Assign "x" (NCte 2)],
+            Case 3 [Assign "x" (NCte 3)],
+            Case 8 [Assign "x" (NCte 8)]]
+            [Assign "x" (NCte 4)]] `memoryShouldBe` [("x", 8)]
+
+      it "con n branches, cuando ninguna matchea" $ do
+        afterRunning [
+          Switch (NCte 10)
+            [Case 2 [Assign "x" (NCte 2)],
+            Case 3 [Assign "x" (NCte 3)],
+            Case 8 [Assign "x" (NCte 8)]]
+            [Assign "x" (NCte 4)]] `memoryShouldBe` [("x", 4)]
+
     describe "un if" $ do
       it "cuando la condicion es verdadera" $ do
         afterRunning [

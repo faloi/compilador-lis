@@ -60,7 +60,9 @@ compileComm (While bexp block) =
       (begin_while : end_while : []) <- generateWhileLabels
       return $ [Mark begin_while] ++ condition ++ [Pop A, JumpIfZ A end_while] ++ body ++ [Jump begin_while, Mark end_while]
 
-compileComm (Switch expression [] defaultBlock) = compileComm (If (BCte True) defaultBlock [])
+compileComm (Switch _ [] defaultBlock) = compileComm (If (BCte True) defaultBlock [])
+compileComm (Switch expression ((Case num caseBlock):cs) defaultBlock) =
+  compileComm (If (Cmp Equal expression (NCte num)) caseBlock [(Switch expression cs defaultBlock)])
 
 doStackOp :: [Mnemonic] -> State Memory [Mnemonic]
 doStackOp mnemonics = return (mnemonics ++ [Push A])
