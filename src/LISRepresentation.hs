@@ -17,16 +17,19 @@
 
 module LISRepresentation (
     Program (Program),
-    
+
     Block,
-    
+
     Command (
         Skip,
         Assign,
         If,
+        Switch,
         While
     ),
-    
+
+    Case (Case),
+
     BExp (
         BCte,
         And,
@@ -34,7 +37,7 @@ module LISRepresentation (
         Not,
         Or
     ),
-    
+
     ROp (
         Equal,
         NotEqual,
@@ -43,9 +46,9 @@ module LISRepresentation (
         Less,
         LessEqual
     ),
-    
+
     --VarName,
-    
+
     NExp (
         Vble,
         NCte,
@@ -69,21 +72,24 @@ type Block   = [Command]
 data Command = Skip
              | Assign VarName NExp
              | If BExp Block Block
+             | Switch NExp [Case] Block
              | While BExp Block
-             
+
+data Case = Case Int Block
+
 data BExp    = BCte Bool
              | And BExp BExp
              | Cmp ROp NExp NExp
              | Not BExp
              | Or BExp BExp
-    
+
 data ROp     = Equal
              | Greater
              | GreaterEqual
              | NotEqual
              | Less
              | LessEqual
-         
+
 type VarName = String
 
 data NExp    = Vble VarName
@@ -93,7 +99,7 @@ data NExp    = Vble VarName
              | Mul NExp NExp
              | Div NExp NExp
              | Mod NExp NExp
-          
+
 
 -- LIS Show
 
@@ -102,19 +108,27 @@ instance Show Program where
 
 showBlock cs = fullRender PageMode 40 2.5 showText "" (ppBlock cs)
 
-ppBlock cs = sep ([ text "{" ] 
+ppBlock cs = sep ([ text "{" ]
               ++     punctuate (text ";") (map (nest 2 . ppComm) cs)
               ++ [ text "}" ])
 
-ppComm Skip = text "skip"
-ppComm (Assign x ne) = text x <+> text ":=" <+> ppNExp ne
-ppComm (If be p1 p2) = sep [ text "if (" <> ppBExp be <> text ")"
-                           , nest 2 (text "then" <+> ppBlock p1)
-                           , nest 2 (text "else" <+> ppBlock p2)
-                           ]
-ppComm (While be p) = sep [ text "while (" <> ppBExp be <> text ") do"
-                          , nest 2 (ppBlock p)
-                          ]
+ppComm Skip               = text "skip"
+ppComm (Assign x ne)      = text x <+> text ":=" <+> ppNExp ne
+ppComm (If be p1 p2)      = sep [ text "if (" <> ppBExp be <> text ")"
+                                , nest 2 (text "then" <+> ppBlock p1)
+                                , nest 2 (text "else" <+> ppBlock p2)
+                                ]
+ppComm (While be p)       = sep [ text "while (" <> ppBExp be <> text ") do"
+                                , nest 2 (ppBlock p)
+                                ]
+ppComm (Switch ne cs def) = sep [ text "switch (" <> ppNExp ne <> text ")"
+                                , nest 2 (ppCases cs)
+                                , nest 2 (text "default" <+> ppBlock def)
+                                ]
+
+ppCases = sep . (foldr ((:).ppCase) [])
+
+ppCase (Case n blk) = sep [ text "case " <> ppAtom (NCte n) <+> ppBlock blk ]
 
 ppNExp e = ppSumm e
 

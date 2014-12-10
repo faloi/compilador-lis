@@ -51,7 +51,7 @@ iff = do
         blockThen <- block
         blockElse <- optionDef iffElse []
         return (If bexp blockThen blockElse)
-        
+
 iffElse = do
             token "else"
             bf <- block
@@ -66,8 +66,20 @@ while = do
             blk  <- block
             return (While bexp blk)
 
+
+-- switch
+
+switch = do
+            token "switch"
+            nexp <- parenthesized nExpr
+            cs   <- cases
+            token "default"
+            def  <- block
+            return (Switch nexp cs def)
+
+
 -- Block
-                                
+
 block = braced commands
 
 commands = do
@@ -75,12 +87,23 @@ commands = do
              option (token ";")
              return cs
 
+-- Case
+cases = do
+             cs <- listOf cases' (option (token ""))
+             return cs
+
+cases' = do
+             token "case"
+             n   <- integer <@ strToInt
+             blk <- block
+             return (Case n blk)
 
 -- Command
 
 command  =  skip
         <|> assign
         <|> iff
+        <|> switch
         <|> while
 
 
@@ -93,8 +116,8 @@ bTerm    =  do
               b   <- bConstant
               return (f b)
         <|> nCmp
-      
-andop    =  op "&&" And 
+
+andop    =  op "&&" And
 orop     =  op "||" Or
 notop    =  op "!"  Not
 
@@ -103,15 +126,15 @@ nCmp   = do
            r  <- relop
            n2 <- nExpr
            return (Cmp r n1 n2)
-          
-relop  =  op ">"  Greater      
-      <|> op ">=" GreaterEqual 
+
+relop  =  op ">"  Greater
+      <|> op ">=" GreaterEqual
       <|> op "<"  Less
       <|> op "<=" LessEqual
-      <|> op "==" Equal 
+      <|> op "==" Equal
       <|> op "!=" NotEqual
-          
-bConstant  =  bTrue 
+
+bConstant  =  bTrue
           <|> bFalse
 bTrue      = tokenAs "True"  (BCte True )
 bFalse     = tokenAs "False" (BCte False)
@@ -122,13 +145,13 @@ bFalse     = tokenAs "False" (BCte False)
 nExpr   =  term `chainl1` addop
 term    =  factor `chainr1` mulop
 factor  =  nConstant
-       <|> variable 
+       <|> variable
        <|> parenthesized nExpr
 
 addop   =  op "+" Add
        <|> op "-" Sub
-mulop   =  op "*" Mul 
-       <|> op "/" Div 
+mulop   =  op "*" Mul
+       <|> op "/" Div
        <|> op "%" Mod
 
 variable = varname <@ Vble
@@ -147,12 +170,12 @@ strToInt (c:cs) = applySign c (toNat cs)
 
 -- Program parser
 
-lisParser = do 
+lisParser = do
               token "program"
               blk <- block
               return (Program blk)
-              
-              
+
+
 -- Lexer
 
 lisLexer = removeAllWhites . removeAllComments
